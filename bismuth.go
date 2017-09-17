@@ -407,6 +407,12 @@ func (ctx *ExecContext) Hostname() string {
 	return ctx.hostname
 }
 
+func (ctx *ExecContext) Port() int {
+	ctx.lock()
+	defer ctx.unlock()
+	return ctx.port
+}
+
 func (ctx *ExecContext) SetUsername(s string) {
 	ctx.lock()
 	defer ctx.unlock()
@@ -420,6 +426,13 @@ func (ctx *ExecContext) SetHostname(s string) {
 	ctx.close()
 	ctx.hostname = s
 	ctx.updatedHostname()
+}
+
+func (ctx *ExecContext) SetPort(port int) {
+	ctx.lock()
+	defer ctx.unlock()
+	ctx.close()
+	ctx.port = port
 }
 
 func (ctx *ExecContext) updatedHostname() {
