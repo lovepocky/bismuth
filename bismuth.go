@@ -603,6 +603,7 @@ func (ctx *ExecContext) StartSession(setupFns ...SessionSetupFn) (pid int, retCo
 }
 
 func (ctx *ExecContext) ExecSession(setupFns ...SessionSetupFn) (retCode int, err error) {
+	ctx.logger.Printf("start of func ExecSession\n")
 	_, retCodeChan, err := ctx.StartSession(setupFns...)
 	if err != nil {
 		return -1, err
@@ -818,7 +819,9 @@ func (ctx *ExecContext) QuoteShell(suffix string, s string) (retCode int, err er
 
 func (ctx *ExecContext) QuoteCwdBuf(suffix string, cwd string, args ...string) (stdout []byte, stderr []byte, retCode int, err error) {
 	bufSetup, bufChan := SessionBuffer()
+	ctx.logger.Printf("complete: `bufSetup, bufChan := SessionBuffer()`\n")
 	retCode, err = ctx.ExecSession(SessionCwd(ctx.AbsPath(cwd)), SessionArgs(args...), bufSetup, ctx.SessionQuoteOut(suffix), ctx.SessionQuoteErr(suffix))
+	ctx.logger.Printf("complete: `retCode, err = ctx.ExecSession`\n")
 	stdout = <-bufChan
 	stderr = <-bufChan
 	return stdout, stderr, retCode, err
